@@ -60,6 +60,12 @@ Este projeto foi desenvolvido em **.NET 8** e utiliza o **PostgreSQL** como banc
 
 Para simplificar a criação e configuração do ambiente, este projeto oferece suporte para execução via Docker Compose. Com essa ferramenta, você pode levantar containers para o PostgreSQL e para a aplicação de forma rápida e integrada, sem a necessidade de instalações ou configurações locais adicionais.
 
+3. **Execução**:
+   -  Abra o projeto e execute o terminal ou navegue via terminal na pasta raiz do projeto e execute o comando:
+     ```bash
+     docker compose up
+     ```
+
 #### O que o Docker Compose Faz?
 
 - **Instalação do PostgreSQL**:  
