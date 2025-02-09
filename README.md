@@ -52,7 +52,7 @@ Este projeto foi desenvolvido em **.NET 8** e utiliza o **PostgreSQL** como banc
      ```bash
      dotnet run
      ```
-   - A aplicação iniciará e, conforme a configuração, realizará a criação do banco de dados e das tabelas, se necessário.
+   - A aplicação iniciará e, conforme a configuração, realizará a criação do banco de dados e das tabelas, se necessário (As migrações irão ser executadas automaticas configuração localizada em `Program.cs` na region `Aplicar migrações no banco de dados`).
 
 ---
 
@@ -64,7 +64,7 @@ Para simplificar a criação e configuração do ambiente, este projeto oferece 
 
 - **Instalação do PostgreSQL**:  
   - Cria uma instância local com a **última versão** do PostgreSQL.
-  - **Atenção**: O armazenamento é **não persistente**. Ou seja, quando o container parar ou for removido, todos os dados serão apagados. Essa abordagem é ideal para ambientes de desenvolvimento e testes.
+  - **Atenção**: O armazenamento é **não persistente**. Ou seja, quando o container parar ou for removido, todos os dados serão apagados.
 
 - **Configuração do Ambiente do Banco de Dados**:  
   São definidas variáveis de ambiente para configurar o acesso ao banco:
@@ -113,3 +113,126 @@ services:
 networks:
   mvc-network:
     driver: bridge
+ ```
+---
+## Testes integrados 
+
+Os testes de serviço estão localizados na pasta `teste` (ou no diretório `ProdutosMvc.Tests.Services`, conforme a estrutura do projeto) e foram implementados utilizando as seguintes bibliotecas:
+
+- **XUnit**: Framework para criação e execução dos testes.
+- **XUnitVisualStudioRunner**: Runner para execução dos testes no Visual Studio.
+- **Moq**: Biblioteca para criação de mocks, permitindo simular dependências e comportamentos.
+
+### Como Executar os testes via Terminal
+1. Abra o terminal na raiz do projeto.
+2. Execute o comando:
+   ```bash
+   dotnet test
+
+### Como Executar os testes usando o **XUnitVisualStudioRunner**
+1. Abra o projeto.
+2. Clique com o botão direito e qualquer uma das classes de testes e logo sem seguida clique na opção `Executar testes`:
+
+1. **Repositories - Localizados no arquivo `ProdutosRepositoryTests.cs`**:
+## Testes da Services
+O arquivo `ProdutoServiceTests.cs` contém testes para o serviço que gerencia os produtos. Abaixo, um resumo dos testes implementados:
+
+- **GetAllAsync_DeveRetornarTodosOsProdutos**  
+  **Objetivo**: Verificar se o método `GetAllAsync` retorna todos os produtos.  
+  **Como funciona**:
+  - Cria um mock do repositório (`IProdutosRepository`) que retorna uma lista contendo dois produtos.
+  - Chama o método `GetAllAsync` do `ProdutoService`.
+  - Verifica se o resultado não é nulo, se a quantidade de produtos é igual a 2 e se o método do repositório foi chamado exatamente uma vez.
+
+- **GetByIdAsync_ProdutoExiste_DeveRetornarProduto**  
+  **Objetivo**: Validar que o método `GetByIdAsync` retorna o produto correto quando ele existe.  
+  **Como funciona**:
+  - Configura o mock para retornar um produto específico ao chamar `GetByIdAsync` com o ID 1.
+  - Chama o método `GetByIdAsync` do `ProdutoService` com o ID 1.
+  - Verifica se o resultado não é nulo, se o produto retornado possui o ID correto e se o método do repositório foi chamado exatamente uma vez.
+
+- **PostAsync_DeveChamarMetodoDoRepositorio**  
+  **Objetivo**: Garantir que, ao adicionar um novo produto, o método `PostAsync` do repositório seja chamado.  
+  **Como funciona**:
+  - Cria uma instância de `Produto` representando um novo produto.
+  - Chama o método `PostAsync` do `ProdutoService`.
+  - Verifica se o método `PostAsync` do repositório foi invocado exatamente uma vez.
+
+- **PutAsync_DeveChamarMetodoDoRepositorio**  
+  **Objetivo**: Confirmar que a atualização de um produto invoca o método `PutAsync` do repositório.  
+  **Como funciona**:
+  - Cria uma instância de `Produto` com ID e informações atualizadas.
+  - Chama o método `PutAsync` do `ProdutoService`.
+  - Verifica se o método `PutAsync` do repositório foi invocado exatamente uma vez.
+
+- **DeleteAsync_DeveChamarMetodoDoRepositorio**  
+  **Objetivo**: Assegurar que a exclusão de um produto aciona o método `DeleteAsync` do repositório.  
+  **Como funciona**:
+  - Define um ID (por exemplo, 1) e chama o método `DeleteAsync` do `ProdutoService`.
+  - Verifica se o método `DeleteAsync` do repositório foi invocado exatamente uma vez.
+
+2. **Repositories - Localizados no arquivo `ProdutosRepositoryTests.cs`**:
+## Testes de Repositório
+
+Os testes do repositório estão localizados na pasta `teste` (ou `ProdutosMvc.Tests.Repositories`, conforme a estrutura do projeto) e foram implementados utilizando as seguintes bibliotecas:
+
+- **XUnit**: Framework para criação e execução dos testes.
+- **XUnitVisualStudioRunner**: Runner para execução dos testes no Visual Studio.
+- **Moq**: (utilizado nos testes de service, embora aqui o foco seja o uso do EF Core InMemory).
+- **Microsoft.EntityFrameworkCore.InMemory**: Para simular um banco de dados real utilizando uma instância em memória.
+
+### Detalhamento dos Testes em `ProdutosRepositoryTests.cs`
+
+O arquivo `ProdutosRepositoryTests.cs` contém testes para o repositório que gerencia os produtos. Abaixo, um resumo dos testes implementados:
+
+- **GetAllAsync_DeveRetornarTodosOsProdutos**  
+  **Objetivo**: Verificar se o método `GetAllAsync` retorna todos os produtos presentes no banco.  
+  **Como funciona**:
+  - Inicialmente, são adicionados dois produtos ao banco de dados em memória.
+  - Após salvar as alterações, o método `GetAllAsync` do repositório é chamado.
+  - O teste valida se o retorno não é nulo e se a contagem de produtos é igual a 2.
+
+- **GetByIdAsync_ProdutoExiste_DeveRetornarProduto**  
+  **Objetivo**: Validar que o método `GetByIdAsync` retorna o produto correto quando este existe.  
+  **Como funciona**:
+  - Um produto é adicionado ao banco de dados.
+  - O método `GetByIdAsync` é chamado com o ID do produto recém-adicionado.
+  - O teste confirma que o produto retornado não é nulo e que os valores (como ID e Nome) correspondem ao esperado.
+
+- **PostAsync_DeveAdicionarProdutoNoBanco**  
+  **Objetivo**: Garantir que, ao adicionar um novo produto, o método `PostAsync` insere o produto corretamente no banco.  
+  **Como funciona**:
+  - É criada uma instância de `Produto` representando um novo produto.
+  - O método `PostAsync` do repositório é chamado para adicionar esse produto.
+  - Após a execução, é realizada uma consulta direta ao contexto para verificar se o produto foi inserido e se seus dados estão corretos.
+
+- **PutAsync_DeveAtualizarProduto**  
+  **Objetivo**: Confirmar que a atualização de um produto através do método `PutAsync` reflete as alterações no banco de dados.  
+  **Como funciona**:
+  - Um produto é adicionado inicialmente ao banco.
+  - Em seguida, os dados do produto (como Nome e Preço) são modificados.
+  - O método `PutAsync` é chamado para atualizar o produto.
+  - O teste verifica se as alterações foram persistidas, consultando o banco de dados em memória.
+
+- **DeleteAsync_DeveRemoverProdutoDoBanco**  
+  **Objetivo**: Assegurar que o método `DeleteAsync` remove o produto do banco de dados corretamente.  
+  **Como funciona**:
+  - Um produto é adicionado ao banco.
+  - O método `DeleteAsync` é chamado com o ID do produto.
+  - Após a remoção, o teste confirma que o produto não pode ser encontrado no banco, validando a exclusão.
+
+- **ValidateExistProdutoNameAsync_DeveRetornarTrueSeProdutoExiste**  
+  **Objetivo**: Verificar se o método `ValidateExistProdutoNameAsync` retorna `true` quando um produto com o nome informado existe no banco.  
+  **Como funciona**:
+  - Um produto é adicionado ao banco com um nome específico.
+  - O método é chamado passando esse nome e o teste valida que o retorno é `true`.
+
+- **ValidateExistProdutoNameAsync_DeveRetornarFalseSeProdutoNaoExiste**  
+  **Objetivo**: Confirmar que o método `ValidateExistProdutoNameAsync` retorna `false` quando não há nenhum produto com o nome informado.  
+  **Como funciona**:
+  - O método é chamado com um nome que não foi cadastrado no banco.
+  - O teste valida que o retorno é `false`.
+
+> **Observação**:  
+> Os testes de repostories implementa a interfface `IDisposable` para garantir que o banco de dados em memória seja limpo após cada execução de teste.
+
