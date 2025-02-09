@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  
+  produtos-db:
+    container_name: produtos-db
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      PGDATA: /data/postgres
+    networks:
+      - mvc-network
+    ports:
+      - "5432:5432"
+  
+  
+  produtos-mvc:
+    container_name: produtos-mvc
+    image: pablo1212/produtosmvc:latest
+    depends_on:
+      - produtos-db
+    ports:
+      - "8082:8080"
+    networks:
+      - mvc-network
+   
+networks:
+  mvc-network:
+    driver: bridge

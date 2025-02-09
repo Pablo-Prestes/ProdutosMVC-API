@@ -1,0 +1,83 @@
+﻿@model ProdutosMvc.Models.Produto
+
+@{
+    ViewData["Title"] = "Editar Produto";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h2 class="text-center">@ViewData["Title"]</h2>
+            <form asp-action="Edit" method="post">
+                <input type="hidden" asp-for="Id" />
+
+                <div class="form-group">
+                    <label asp-for="Nome" class="control-label"></label>
+                    <input asp-for="Nome" class="form-control" maxlength="100" id="Nome" />
+                    <div class="d-flex justify-content-end">
+                        <small id="nomeCounter" class="text-muted">@((Model.Nome ?? "").Length)/100</small>
+                    </div>
+                    <span asp-validation-for="Nome" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Descricao" class="control-label"></label>
+                    <textarea asp-for="Descricao" class="form-control" maxlength="200" id="Descricao" rows="3"></textarea>
+                    <div class="d-flex justify-content-end">
+                        <small id="descricaoCounter" class="text-muted">@((Model.Descricao ?? "").Length)/200</small>
+                    </div>
+                    <span asp-validation-for="Descricao" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Preco" class="control-label"></label>
+                    <input asp-for="Preco" class="form-control" id="Preco" type="text" />
+                    <span asp-validation-for="Preco" class="text-danger"></span>
+                </div>
+
+                <br />
+                <button type="submit" class="btn btn-primary">Atualizar</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/lib/jquery.maskMoney/jquery.maskMoney.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#Nome').on('input', function () {
+                var max = $(this).attr('maxlength');
+                var currentLength = $(this).val().length;
+                $('#nomeCounter').text(currentLength + '/' + max);
+            });
+            $('#Descricao').on('input', function () {
+                var max = $(this).attr('maxlength');
+                var currentLength = $(this).val().length;
+                $('#descricaoCounter').text(currentLength + '/' + max);
+            });
+
+            // $('#Preco').maskMoney({ //TODO: formatação de dinheiro
+            //     prefix: 'R$ ',
+            //     allowNegative: false,
+            //     thousands: '.', 
+            //     decimal: ',',   
+            //     affixesStay: true,
+            //     precision: 1
+            // });
+
+            // $('#Preco').maskMoney('mask');
+
+            // $('form').on('submit', function () {
+            //     var unmaskedValue = $('#Preco').maskMoney('unmasked')[0]; 
+            //     var formattedValue = parseFloat(unmaskedValue).toString().replace(',', '.');
+            //     $('#Preco').val(formattedValue); // Garante o formato correto para envio
+            // });
+        });
+    </script>
+}

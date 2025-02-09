@@ -1,0 +1,63 @@
+﻿@model ProdutosMvc.Models.Produto
+
+@{
+    ViewData["Title"] = "Criar Produto";
+}
+
+<h2 class="text-center">@ViewData["Title"]</h2>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form asp-action="Create" method="post">
+                <div class="form-group">
+                    <label asp-for="Nome" class="control-label"></label>
+                    <input asp-for="Nome" class="form-control" maxlength="100" id="Nome" />
+                    <div class="d-flex justify-content-end">
+                        <small id="nomeCounter" class="text-muted">0/100</small>
+                    </div>
+                    <span asp-validation-for="Nome" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Descricao" class="control-label"></label>
+                    <textarea asp-for="Descricao" class="form-control" maxlength="200" id="Descricao" rows="3"></textarea>
+                    <div class="d-flex justify-content-end">
+                        <small id="descricaoCounter" class="text-muted">0/200</small>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Preco" class="control-label"></label>
+                    <input asp-for="Preco" class="form-control" maxlength="10" id="Preco" type="number" step="any" />
+                    <span asp-validation-for="Preco" class="text-danger"></span>
+                </div>
+                <br />
+                <button type="submit" class="btn btn-primary">Salvar</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts { 
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function () {
+            $('#Nome').on('input', function () {
+                var max = $(this).attr('maxlength');
+                var currentLength = $(this).val().length;
+                $('#nomeCounter').text(currentLength + '/' + max);
+            });
+            $('#Descricao').on('input', function () {
+                var max = $(this).attr('maxlength');
+                var currentLength = $(this).val().length;
+                $('#descricaoCounter').text(currentLength + '/' + max);
+            });
+        });
+        //TODO: Adicionar formatação de dinheiro
+    </script>
+}

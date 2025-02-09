@@ -1,0 +1,13 @@
+{
+  "version": "3.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "jquery-maskmoney@3.0.2",
+      "destination": "wwwroot/lib/jquery.maskMoney",
+      "files": [
+        "jquery.maskMoney.min.js"
+      ]
+    }
+  ]
+}
