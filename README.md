@@ -42,10 +42,10 @@ Este projeto foi desenvolvido em **.NET 8** e utiliza o **PostgreSQL** como banc
 
 2. **Configuração do Banco de Dados**:
    - A aplicação está configurada para se conectar a um banco de dados PostgreSQL utilizando a porta padrão `5432`.
-   - **Observações**:
-     - Se o banco de dados (padrão: `postgres`) já existir, o projeto criará as tabelas necessárias automaticamente.
-     - Se o banco de dados não existir, a aplicação criará o banco e as tabelas automaticamente.
-     - Caso o seu banco de dados esteja em outro servidor ou utilize uma porta diferente de `5432`, será necessário ajustar a string de conexão na configuração do projeto.
+   > **Observações**:
+     > Se o banco de dados (padrão: `postgres`) já existir, o projeto criará as tabelas necessárias automaticamente.
+     > Se o banco de dados não existir, a aplicação criará o banco e as tabelas automaticamente.
+     > Caso o seu banco de dados esteja em outro servidor ou utilize uma porta diferente de `5432`, será necessário ajustar a string de conexão na configuração do projeto.
 
 3. **Execução**:
    - Compile e execute o projeto utilizando o **Visual Studio** ou, via terminal, com o comando:
